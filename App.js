@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {createStore} from 'redux'
-import { Platform, StyleSheet, Text, View, StatusBar } from 'react-native'
+import { Platform, StyleSheet, View, StatusBar } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
@@ -9,7 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import Constants from 'expo-constants'
 import {Provider} from 'react-redux'
 
-import reducer from './reducers'
+import store from './store';
 import {white} from './utils/colors'
 import DeckList from './components/DeckList'
 import NewDeck from './components/NewDeck'
@@ -17,7 +16,6 @@ import DeckView from './components/DeckView'
 import AddCard from './components/AddCard'
 import Quiz from './components/Quiz'
 import {setLocalNotification} from './utils/notifications'
-
 
 function FlashcardStatusBar({backgroundColor, ...props}) {
   return (
@@ -115,7 +113,7 @@ export default class App extends Component {
   }
   render() {
     return (
-      <Provider store={createStore(reducer)}>
+      <Provider store={store}>
         <View style={styles.container}>
           <FlashcardStatusBar backgroundColor={'black'} barStyle='light-content' />
           <NavigationContainer style={styles.container}>

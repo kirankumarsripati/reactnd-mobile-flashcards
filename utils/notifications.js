@@ -1,13 +1,13 @@
-import {Notifications} from 'expo'
-import * as Permissions from 'expo-permissions'
-import { AsyncStorage } from 'react-native'
+import { Notifications } from 'expo';
+import Permissions from 'expo-permissions';
+import { AsyncStorage } from 'react-native';
 
-const NOTIFICATION_KEY = 'MobileFlashcards:notifications'
+const NOTIFICATION_KEY = 'flashcardsNotifications';
 
-function createNotification(){
+const createNotification = () => {
   return {
-    title: 'Time to visit Flashcards!',
-    body: "Your flashcards are waiting for you! Don't forget to visit them and check yourself!",
+    title: 'Reminder Flashcards',
+    body: "Don't forget to check flashcards today!",
     ios: {
       sound: true
     },
@@ -20,7 +20,7 @@ function createNotification(){
   }
 }
 
-export function setLocalNotification() {
+export const setLocalNotification = () => {
   AsyncStorage.getItem(NOTIFICATION_KEY)
     .then(JSON.parse)
     .then((data) => {
@@ -32,7 +32,7 @@ export function setLocalNotification() {
 
               let tomorrow = new Date()
               tomorrow.setDate(tomorrow.getDate() + 1)
-              tomorrow.setHours(19)
+              tomorrow.setHours(10)
               tomorrow.setMinutes(0)
 
               Notifications.scheduleLocalNotificationAsync(
@@ -49,7 +49,7 @@ export function setLocalNotification() {
     })
 }
 
-export function clearLocalNotifications() {
+export const clearLocalNotifications = () => {
   return AsyncStorage.removeItem(NOTIFICATION_KEY)
     .then(Notifications.cancelAllScheduledNotificationsAsync)
 }

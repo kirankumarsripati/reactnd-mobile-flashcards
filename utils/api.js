@@ -1,23 +1,26 @@
-import {AsyncStorage} from 'react-native'
-import {DECKS_STORAGE_KEY, handleDecks} from './_decks'
+import { AsyncStorage } from 'react-native'
+import defaultData from './_DATA';
 
+export const FLASHCARDS_DATA_KEY = 'flashcardsData'
 
-export function getDecks() {
-  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
-    .then(handleDecks)
+export async function getDecks() {
+  const result = await AsyncStorage.getItem(FLASHCARDS_DATA_KEY);
+  if (result) {
+    return JSON.parse(result);
+  } else {
+    await AsyncStorage.setItem(FLASHCARDS_DATA_KEY, JSON.stringify(defaultData));
+    return defaultData;
+  }
 }
 
-export function getDeck(id) {
-  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
-    .then((results) => {
-      const data = JSON.parse(results)
-      const deck = data[id]
-      return deck
-    })
+export async function getDeck(id) {
+  const result = await AsyncStorage.getItem(FLASHCARDS_DATA_KEY)
+  const decks = JSON.parse(result);
+  return decks[id];
 }
 
-export function saveDeckTitle(title) {
-  return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
+export async function saveDeckTitle(title) {
+  await AsyncStorage.mergeItem(FLASHCARDS_DATA_KEY, JSON.stringify({
     [title]: {
       title: title,
       questions: []
@@ -25,23 +28,23 @@ export function saveDeckTitle(title) {
   }))
 }
 
-export function submitCard(title, card) {
-  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+export async function addCard(title, card) {
+  await AsyncStorage.getItem(FLASHCARDS_DATA_KEY)
     .then((results) => {
       const data = JSON.parse(results)
       const deck = data[title]
       deck.questions.push(card)
-      AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
+      AsyncStorage.mergeItem(FLASHCARDS_DATA_KEY, JSON.stringify({
         [title]: deck
       }))
     })
 }
 
-export function dropDeck(key) {
-  return AsyncStorage.getItem(DECKS_STORAGE_KEY)
+export async function deleteDeck(key) {
+  return AsyncStorage.getItem(FLASHCARDS_DATA_KEY)
     .then((results) => {
       const data = JSON.parse(results)
       delete data[key]
-      AsyncStorage.setItem(DECKS_STORAGE_KEY, JSON.stringify(data))
+      AsyncStorage.setItem(FLASHCARDS_DATA_KEY, JSON.stringify(data))
     })
 }
