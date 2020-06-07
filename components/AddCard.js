@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Text,
   KeyboardAvoidingView,
@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform
-} from 'react-native'
-import { connect } from 'react-redux'
+} from 'react-native';
+import { connect } from 'react-redux';
 
-import { white } from '../utils/colors'
-import { handleAddCard } from '../actions'
+import { white } from '../utils/colors';
+import { handleAddCard } from '../actions';
 
 const AddCard = ({ deckId, navigation, addCard }) => {
   const [question, setQuestion] = React.useState('');

@@ -16,6 +16,7 @@ const decks = (state={}, action) => {
       return {
         ...state,
         [action.id]: {
+          id: action.id,
           title: action.title,
           questions: [],
         }
@@ -29,10 +30,11 @@ const decks = (state={}, action) => {
         }
       }
     case DELETE_DECK :
-      delete state[action.id]
-      return {
+      const newState = {
         ...state,
       }
+      delete newState[action.id]
+      return newState;
     default :
       return state;
   }

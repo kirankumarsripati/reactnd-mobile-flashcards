@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   View,
   Text,
@@ -6,16 +6,17 @@ import {
   StyleSheet,
   Button,
   Platform
-} from 'react-native'
-import { connect } from 'react-redux'
+} from 'react-native';
+import { connect } from 'react-redux';
 
-import { white } from '../utils/colors'
-import { handleDeleteDeck } from '../actions'
+import { white } from '../utils/colors';
+import { handleDeleteDeck } from '../actions';
 
-const DeckView = ({ deck, navigation }) => {
-  const deleteDeck = () => {
+const DeckView = ({ deck, navigation, deleteDeck }) => {
+  const onDeleteDeck = () => {
     const { id } = deck;
-    handleDeleteDeck(id);
+
+    deleteDeck(id);
 
     navigation.navigate('Decks');
   }
@@ -51,7 +52,7 @@ const DeckView = ({ deck, navigation }) => {
         <Button
           title='Delete'
           color='red'
-          onPress={deleteDeck}
+          onPress={onDeleteDeck}
         />
       </View>
     </View>
@@ -95,11 +96,19 @@ const styles = StyleSheet.create({
 })
 
 
-function mapStateToProps(state, {route}) {
+const mapStateToProps = (state, {route}) => {
   const { deckId } = route.params
   return {
     deck: state[deckId]
   }
 }
 
-export default connect(mapStateToProps)(DeckView)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteDeck: (deckId) => {
+      dispatch(handleDeleteDeck(deckId));
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeckView)

@@ -19,32 +19,33 @@ export async function getDeck(id) {
   return decks[id];
 }
 
-export async function saveDeckTitle(title) {
+export async function saveDeckTitle(id, title) {
   await AsyncStorage.mergeItem(FLASHCARDS_DATA_KEY, JSON.stringify({
-    [title]: {
-      title: title,
+    [id]: {
+      id,
+      title,
       questions: []
     }
   }))
 }
 
-export async function addCard(title, card) {
+export async function addCard(id, card) {
   await AsyncStorage.getItem(FLASHCARDS_DATA_KEY)
     .then((results) => {
       const data = JSON.parse(results)
-      const deck = data[title]
+      const deck = data[id]
       deck.questions.push(card)
       AsyncStorage.mergeItem(FLASHCARDS_DATA_KEY, JSON.stringify({
-        [title]: deck
+        [id]: deck
       }))
     })
 }
 
-export async function deleteDeck(key) {
+export async function deleteDeck(id) {
   return AsyncStorage.getItem(FLASHCARDS_DATA_KEY)
     .then((results) => {
       const data = JSON.parse(results)
-      delete data[key]
+      delete data[id]
       AsyncStorage.setItem(FLASHCARDS_DATA_KEY, JSON.stringify(data))
     })
 }

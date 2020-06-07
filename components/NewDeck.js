@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Text,
   TextInput,
@@ -6,25 +6,29 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
-} from 'react-native'
-import { connect } from 'react-redux'
+} from 'react-native';
+import { connect } from 'react-redux';
 
-import { white } from '../utils/colors'
-import { handleAddDeck } from '../actions'
+import { white } from '../utils/colors';
+import { handleAddDeck } from '../actions';
+import { generateUID } from '../utils/helpers';
 
 
 const NewDeck = ({ addDeck, navigation }) => {
   const [title, setTitle] = React.useState('');
 
-  const onChange = (text) => setTitle(text);
+  const onChange = (text) => {
+    setTitle(text);
+  }
 
   const onSubmit = () => {
     if (title === '') {
       alert('Title is required')
-      return
+      return;
     }
 
-    addDeck(title);
+    const id = generateUID();
+    addDeck(id, title);
     setTitle('');
 
     navigation.navigate('Decks');
@@ -82,8 +86,8 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addDeck: (title) => {
-      dispatch(handleAddDeck(title));
+    addDeck: (id, title) => {
+      dispatch(handleAddDeck(id, title));
     }
   }
 }

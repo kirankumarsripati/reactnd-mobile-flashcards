@@ -1,11 +1,11 @@
-import React, {Component} from 'react'
-import {View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native'
-import { connect } from 'react-redux'
-import { FontAwesome5 } from '@expo/vector-icons'
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
+import { connect } from 'react-redux';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import { white } from '../utils/colors'
-import {clearLocalNotifications, setLocalNotification} from '../utils/notifications'
-import {shuffleData} from '../utils/helpers'
+import { white } from '../utils/colors';
+import {clearLocalNotifications, setLocalNotification} from '../utils/notifications';
+import {shuffleData} from '../utils/helpers';
 
 const Quiz = ({ deckId, questions, navigation }) => {
   const [answered, setAnswered] = React.useState(false);

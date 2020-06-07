@@ -12,25 +12,26 @@ export const getDecks = (decks) => {
   }
 }
 
-export const addDeck = (title) => {
+export const addDeck = (id, title) => {
   return {
     type: ADD_DECK,
+    id,
     title,
   }
 }
 
-export const addCard = (deckId, card) => {
+export const addCard = (id, card) => {
   return {
     type: ADD_CARD,
-    deckId,
+    id,
     card,
   }
 }
 
-export const deleteDeck = (deckId) => {
+export const deleteDeck = (id) => {
   return {
     type: DELETE_DECK,
-    deckId,
+    id,
   }
 }
 
@@ -41,10 +42,10 @@ export const handleGetAllDecks = () => (dispatch) => {
     });
 }
 
-export const handleAddDeck = (title) => (dispatch) => {
-  return API.saveDeckTitle(title)
+export const handleAddDeck = (id, title) => (dispatch) => {
+  return API.saveDeckTitle(id, title)
     .then((deck) => {
-      dispatch(addDeck(deck));
+      dispatch(addDeck(id, title));
     })
 }
 
