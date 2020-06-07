@@ -1,83 +1,66 @@
-import React, {Component} from 'react'
-import {Text, KeyboardAvoidingView, TextInput, TouchableOpacity, StyleSheet, Platform} from 'react-native'
-import {connect} from 'react-redux'
-import {CommonActions} from '@react-navigation/native'
+import React from 'react'
+import {
+  Text,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Platform
+} from 'react-native'
+import { connect } from 'react-redux'
 
 import { white } from '../utils/colors'
-import {addCardToDeck} from '../actions'
-import {submitCard} from '../utils/api'
+import { handleAddCard } from '../actions'
 
+const AddCard = ({ deckId, navigation, addCard }) => {
+  const [question, setQuestion] = React.useState('');
+  const [answer, setAnswer] = React.useState('');
 
-class AddCard extends Component {
-  state = {
-    question: '',
-    answer: '',
-  }
+  const onChangeQuestion = (text) => setQuestion(text);
 
-  onChangeQuestion = (text) => {
-    this.setState({
-      question: text
-    })
-  }
+  const onChangeAnswer = (text) => setAnswer(text);
 
-  onChangeAnswer = (text) => {
-    this.setState({
-      answer: text
-    })
-  }
-
-  submit = () => {
-    const {question, answer} = this.state
-    const {deckId, dispatch} = this.props
-
-    if (question === '' || answer === ''){
-      alert('You need to enter question and answer!')
-      return
+  const onSubmit = () => {
+    if (question === '') {
+      alert('Question is required!');
+      return;
+    }
+    if (answer === '') {
+      alert('Answer is required!');
+      return;
     }
 
-    dispatch(addCardToDeck(deckId, {question, answer}))
+    addCard(deckId, { question, answer });
 
-    submitCard(deckId, {question, answer})
+    setQuestion('');
+    setAnswer('');
 
-    this.setState({
-      question: '',
-      answer: '',
-    })
-
-    this.props.navigation.dispatch(
-      CommonActions.goBack({
-          key: 'DeckView',
-      }))
-
+    navigation.navigate('DeckView');
   }
 
-  render() {
-    const {question, answer} = this.state
-
-    return (
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : null}
-      >
-        <Text style={styles.text}>Insert question and answer below</Text>
-        <TextInput
-          style={styles.input}
-          value={question}
-          placeholder="...question here"
-          onChangeText={this.onChangeQuestion}
-        />
-        <TextInput
-          style={styles.input}
-          value={answer}
-          placeholder="...answer here"
-          onChangeText={this.onChangeAnswer}
-        />
-        <TouchableOpacity style={styles.btnCont} onPress={this.submit}>
-          <Text style={styles.btnText}>Submit</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    )
-  }
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+    >
+      <Text style={styles.text}>Add your question</Text>
+      <TextInput
+        style={styles.input}
+        value={question}
+        placeholder="What's your question?"
+        onChangeText={onChangeQuestion}
+      />
+      <TextInput
+        style={styles.input}
+        value={answer}
+        placeholder="What's your answer?"
+        onChangeText={onChangeAnswer}
+      />
+      <TouchableOpacity style={styles.btnCont} onPress={onSubmit}>
+        <Text style={styles.btnText}>Submit</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -113,11 +96,19 @@ const styles = StyleSheet.create({
 })
 
 
-function mapStateToProps(state, {route}) {
-  const {deckId} = route.params
+const mapStateToProps = (state, { route }) => {
+  const { deckId } = route.params
   return {
     deckId,
   }
 }
 
-export default connect(mapStateToProps)(AddCard)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addCard: (deckId, card) => {
+      dispatch(handleAddCard(deckId, card));
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddCard)
