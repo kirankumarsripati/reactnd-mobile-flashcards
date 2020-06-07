@@ -28,7 +28,7 @@ const DeckView = ({ deck, navigation, deleteDeck }) => {
     }
     navigation.navigate('Quiz', {'deckId': deck.id})
   }
-  return (
+  return (deck ?
     <View style={styles.container}>
       <View style={{flex: 4, justifyContent: 'center'}}>
         <Text style={styles.text}>{deck.title}</Text>
@@ -55,7 +55,8 @@ const DeckView = ({ deck, navigation, deleteDeck }) => {
           onPress={onDeleteDeck}
         />
       </View>
-    </View>
+    </View> :
+    <View><Text>No Dock</Text></View>
   )
 }
 

@@ -7,12 +7,12 @@ import {
 
 const decks = (state={}, action) => {
   switch(action.type) {
-    case GET_DECKS :
+    case GET_DECKS:
       return {
         ...state,
         ...action.decks,
       }
-    case ADD_DECK :
+    case ADD_DECK:
       return {
         ...state,
         [action.id]: {
@@ -21,7 +21,7 @@ const decks = (state={}, action) => {
           questions: [],
         }
       }
-    case ADD_CARD :
+    case ADD_CARD:
       return {
         ...state,
         [action.id]: {
