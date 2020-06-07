@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {
   Text,
   TextInput,
@@ -7,68 +7,46 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native'
-import {connect} from 'react-redux'
-import {CommonActions} from '@react-navigation/native'
+import { connect } from 'react-redux'
 
-import {saveDeckTitle, getDecks} from '../utils/api'
-import {white} from '../utils/colors'
-import {addDeck} from '../actions'
+import { white } from '../utils/colors'
+import { handleAddDeck } from '../actions'
 
 
-class NewDeck extends Component {
-  state = {
-    title: ''
-  }
+const NewDeck = ({ addDeck, navigation }) => {
+  const [title, setTitle] = React.useState('');
 
-  onChange = (text) => {
-    this.setState({
-      title: text
-    })
-  }
+  const onChange = (text) => setTitle(text);
 
-  submit = () => {
-    const {title} = this.state
-
+  const onSubmit = () => {
     if (title === '') {
-      alert('You must fill title field')
+      alert('Title is required')
       return
     }
 
-    this.props.dispatch(addDeck(title))
+    addDeck(title);
+    setTitle('');
 
-    this.setState({
-      title: ''
-    })
-
-    saveDeckTitle(title)
-
-     this.props.navigation.dispatch(
-      CommonActions.goBack({
-          key: 'Decks',
-      }))
-
+    navigation.navigate('Decks');
   }
 
-  render() {
-    const {title} = this.state
-    return (
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : null}
-      >
-        <Text style={styles.text}>What is the title of your new deck?</Text>
-        <TextInput
-          style={styles.input}
-          value={title}
-          placeholder="Deck Title"
-          onChangeText={this.onChange}
-        />
-        <TouchableOpacity style={styles.btnCont} onPress={this.submit}>
-          <Text style={styles.btnText}>Submit</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
-    )
-  }
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+    >
+      <Text style={styles.text}>What is the title of your new deck?</Text>
+      <TextInput
+        style={styles.input}
+        value={title}
+        placeholder="Deck Title"
+        onChangeText={onChange}
+      />
+      <TouchableOpacity style={styles.btnCont} onPress={onSubmit}>
+        <Text style={styles.btnText}>Submit</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -102,4 +80,12 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect()(NewDeck)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addDeck: (title) => {
+      dispatch(handleAddDeck(title));
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(NewDeck)

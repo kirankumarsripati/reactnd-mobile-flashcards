@@ -41,7 +41,7 @@ export const handleGetAllDecks = () => (dispatch) => {
     });
 }
 
-export const handleAddDecks = (title) => (dispatch) => {
+export const handleAddDeck = (title) => (dispatch) => {
   return API.saveDeckTitle(title)
     .then((deck) => {
       dispatch(addDeck(deck));
