@@ -9,7 +9,7 @@ export default {
       },
       {
         question: 'What is JSX?',
-        answer: 'JSX stands for JavaScript XML. JSX allows us to write HTML in React. JSX makes it easier to write and add HTML in React.',
+        answer: 'JSX stands for JavaScript XML. JSX makes it easier to write and add HTML in React.',
       },
     ],
   },
@@ -19,7 +19,7 @@ export default {
     questions: [
       {
         question: 'What is JavaScript?',
-        answer: 'JavaScript is a client-side as well as server side scripting language that can be inserted into HTML pages and is understood by web browsers. JavaScript is also an Object based Programming language.',
+        answer: 'JavaScript is a client-side as well as server side scripting language.',
       },
       {
         question: 'What is the use of isNaN function?',

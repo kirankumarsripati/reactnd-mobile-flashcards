@@ -4,7 +4,7 @@ import { AsyncStorage } from 'react-native';
 
 const NOTIFICATION_KEY = 'flashcardsNotifications';
 
-const createNotification = () => {
+function createNotification(){
   return {
     title: 'Reminder Flashcards',
     body: "Don't forget to check flashcards today!",
@@ -20,7 +20,7 @@ const createNotification = () => {
   }
 }
 
-export const setLocalNotification = () => {
+export function setLocalNotification() {
   AsyncStorage.getItem(NOTIFICATION_KEY)
     .then(JSON.parse)
     .then((data) => {
@@ -49,7 +49,7 @@ export const setLocalNotification = () => {
     })
 }
 
-export const clearLocalNotifications = () => {
+export function clearLocalNotifications() {
   return AsyncStorage.removeItem(NOTIFICATION_KEY)
     .then(Notifications.cancelAllScheduledNotificationsAsync)
 }

@@ -1,54 +1,39 @@
 import React, {Component} from 'react'
 import {View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native'
 import { connect } from 'react-redux'
-import { FontAwesome5 } from '@expo/vector-icons' 
+import { FontAwesome5 } from '@expo/vector-icons'
 
 import { white } from '../utils/colors'
 import {clearLocalNotifications, setLocalNotification} from '../utils/notifications'
 import {shuffleData} from '../utils/helpers'
 
+const Quiz = ({ deckId, questions, navigation }) => {
+  const [answered, setAnswered] = React.useState(false);
+  const [score, setScore] = React.useState(0);
+  const [counter, setCounter] = React.useState(0);
 
-class Quiz extends Component {
-  state = {
-    answered: false,
-    score: 0,
-    counter: 0,
+  const showAnswer = () => setAnswered(true);
+
+  const correct = () => {
+    setScore(score + 1);
+    setCounter(counter + 1);
+    setAnswered(false);
   }
 
-  showAnswer = () => {
-    this.setState({
-      answered: true
-    })
-  }
-  
-  correct = () =>{
-    this.setState((currentState) => ({
-      score: currentState.score + 1,
-      counter: currentState.counter +1,
-      answered: false,
-    }))
+  const incorrect = () => {
+    setCounter(counter + 1);
+    setAnswered(false);
   }
 
-  incorrect = () => {
-    this.setState((currentState) => ({
-      counter: currentState.counter +1,
-      answered: false,
-    }))
+  const reset = () => {
+    setAnswered(false);
+    setScore(0);
+    setCounter(0);
   }
 
-  reset = () => {
-    this.setState({
-      answered: false,
-      score: 0,
-      counter: 0,
-    })
-  }
-
-  render() {
-    const {counter, score, answered} = this.state
-    const {deckId, questions} = this.props
+  const render = () => {
     const cardNum = questions.length
-  
+
     if (counter >=  cardNum) {
       clearLocalNotifications()
         .then(setLocalNotification)
@@ -65,23 +50,23 @@ class Quiz extends Component {
             {score} correct / {cardNum} all
           </Text>
           <View style={{alignItems: 'center', padding: 20}}>
-            {score/cardNum === 0 && 
+            {score/cardNum === 0 &&
               <FontAwesome5 name="sad-tear" size={50} color="black"/>
             }
-            {score/cardNum === 1 && 
+            {score/cardNum === 1 &&
               <FontAwesome5 name="smile-beam" size={50} color="black" />
             }
           </View>
           <View>
             <TouchableOpacity
               style={[styles.resultBtn, {backgroundColor: 'black'}]}
-              onPress={this.reset}
+              onPress={reset}
               >
                 <Text style={[styles.btnText, {color: 'white'}]}>Start the Quiz again!</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.resultBtn, {backgroundColor: white, borderWidth: 1, borderColor: 'black'}]}
-                onPress={() => this.props.navigation.navigate(
+                onPress={() => navigation.navigate(
                   'DeckView', {'deckId': deckId}
                 )}
               >
@@ -93,7 +78,7 @@ class Quiz extends Component {
     }
 
     const card = questions[counter]
- 
+
     return (
       <View style={{flex: 1, backgroundColor: white}}>
         <View style={styles.counter}>
@@ -109,7 +94,7 @@ class Quiz extends Component {
                 <Button
                     title='See answer'
                     color='red'
-                    onPress={this.showAnswer}
+                    onPress={showAnswer}
                     style={styles.btn}
                 />
               </View>
@@ -121,13 +106,13 @@ class Quiz extends Component {
                 </Text>
                 <TouchableOpacity
                   style={[styles.btnCont, {backgroundColor: 'green'}]}
-                  onPress={this.correct}
+                  onPress={correct}
                 >
                   <Text style={[styles.btnText, {color: 'white'}]}>Correct</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.btnCont, {backgroundColor: 'red', color: white}]}
-                  onPress={this.incorrect}
+                  onPress={incorrect}
                 >
                   <Text style={[styles.btnText, {color: 'white'}]}>Incorrect</Text>
                 </TouchableOpacity>
@@ -138,6 +123,8 @@ class Quiz extends Component {
       </View>
     )
   }
+
+  return render();
 }
 
 const styles = StyleSheet.create({
@@ -201,7 +188,7 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps(state, {route}) {
-  const {deckId} = route.params
+  const { deckId } = route.params
   const deck = state[deckId]
   const questions = shuffleData(deck.questions)
 
