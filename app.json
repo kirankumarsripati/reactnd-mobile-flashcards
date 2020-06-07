@@ -1,8 +1,8 @@
 {
-  "name": "reactnd-mobile-flashcards",
-  "displayName": "reactnd-mobile-flashcards",
+  "name": "Mobile Flashcards",
+  "displayName": "Mobile Flashcards",
   "expo": {
-    "name": "reactnd-mobile-flashcards",
+    "name": "Mobile Flashcards",
     "slug": "expo-template-bare",
     "version": "1.0.0",
     "platforms": [
