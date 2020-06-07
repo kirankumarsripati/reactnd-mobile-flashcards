@@ -1,77 +1,61 @@
-import React, {Component} from 'react'
-import {View, Text, TouchableOpacity, StyleSheet, Button, Platform} from 'react-native'
-import {connect} from 'react-redux'
-import {CommonActions} from '@react-navigation/native'
-import {AppLoading} from 'expo'
+import React from 'react'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Button,
+  Platform
+} from 'react-native'
+import { connect } from 'react-redux'
 
-import {white} from '../utils/colors'
-import {removeDeck} from '../actions'
-import {dropDeck} from '../utils/api'
+import { white } from '../utils/colors'
+import { handleDeleteDeck } from '../actions'
 
+const DeckView = ({ deck, navigation }) => {
+  const deleteDeck = () => {
+    const { id } = deck;
+    handleDeleteDeck(id);
 
-class DeckView extends Component {
-  delete = () => {
-    const {deck, dispatch} = this.props
-    const title = deck.title
-    dispatch(removeDeck(title))
-
-    this.props.navigation.dispatch(
-      CommonActions.goBack({
-          key: 'Decks',
-      }))
-
-    dropDeck(title)
-
+    navigation.navigate('Decks');
   }
 
-  startQuiz = () => {
-    const {deck} = this.props
+  const startQuiz = () => {
     if (deck.questions.length === 0) {
-      alert('Deck must have at least one question to start a quiz.')
+      alert('Atlest one question is required to start quiz.')
       return
     }
-    this.props.navigation.navigate(
-      'Quiz', {'deckId': deck.title}
-    )
+    navigation.navigate('Quiz', {'deckId': deck.id})
   }
-  render () {
-    const {deck} = this.props
-
-    if (deck === undefined) {
-      return <AppLoading/>
-    }
-
-    return (
-      <View style={styles.container}>
-        <View style={{flex: 4, justifyContent: 'center'}}>
-          <Text style={styles.text}>{deck.title}</Text>
-          <Text style={styles.cardsInfo}>{deck.questions.length} cards</Text>
-          <TouchableOpacity
-            style={[styles.btnCont, {backgroundColor: white, borderWidth: 1, borderColor: 'black'}]}
-            onPress={() => this.props.navigation.navigate(
-              'AddCard', {'deckId': deck.title}
-            )}
-          >
-            <Text style={[styles.btnText, {color: 'black'}]}>Add Card</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.btnCont, {backgroundColor: 'black'}]}
-            onPress={this.startQuiz}
-          >
-            <Text style={styles.btnText}>Start Quiz</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{flex: 1, paddingHorizontal: 70}}>
-          <Button
-            title='Delete'
-            color='red'
-            onPress={this.delete}
-            style={{fontSize: 20}}
-          />
-        </View>
+  return (
+    <View style={styles.container}>
+      <View style={{flex: 4, justifyContent: 'center'}}>
+        <Text style={styles.text}>{deck.title}</Text>
+        <Text style={styles.cardsInfo}>{deck.questions.length} cards</Text>
+        <TouchableOpacity
+          style={[styles.btnCont, {backgroundColor: white, borderWidth: 1, borderColor: 'black'}]}
+          onPress={() => navigation.navigate(
+            'AddCard', {'deckId': deck.id}
+          )}
+        >
+          <Text style={[styles.btnText, {color: 'black'}]}>Add Card</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.btnCont, {backgroundColor: 'black'}]}
+          onPress={startQuiz}
+        >
+          <Text style={styles.btnText}>Start Quiz</Text>
+        </TouchableOpacity>
       </View>
-    )
-  }
+      <View style={{flex: 1, paddingHorizontal: 70}}>
+        <Button
+          title='Delete'
+          color='red'
+          onPress={deleteDeck}
+        />
+      </View>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -112,7 +96,7 @@ const styles = StyleSheet.create({
 
 
 function mapStateToProps(state, {route}) {
-  const {deckId} = route.params
+  const { deckId } = route.params
   return {
     deck: state[deckId]
   }
