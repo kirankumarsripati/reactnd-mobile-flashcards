@@ -1,69 +1,47 @@
-import React, {Component} from 'react'
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated} from 'react-native'
-import {AppLoading} from 'expo'
-import {connect} from 'react-redux'
+import React from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from 'react-native'
+import { connect } from 'react-redux'
 
-import {getDecks} from '../utils/api'
 import { white } from '../utils/colors'
-import {receiveDecks} from '../actions'
+import { handleGetAllDecks } from '../actions'
 
 
-class DeckList extends Component {
-  state = {
-    ready: false,
-    bounceValues: [],
-  }
-  componentDidMount() {
-    const {dispatch} = this.props
-    getDecks()
-      .then((decks) => dispatch(receiveDecks(decks)))
-      .then(({decks}) => {
-        this.setState({
-          ready: true,
-          bounceValues: [...Array(Object.keys(decks).length).keys()].map(() => new Animated.Value(1)),
-        })
-      })
-  }
+const DeckList = ({ decks, initializeData, navigation }) => {
+  React.useEffect(() => {
+    initializeData();
+  }, [initializeData])
 
-  goToDeckView = (key, index) => {
-    const {bounceValues} = this.state
-  
-    Animated.sequence([
-      Animated.timing(bounceValues[index], {duration: 150, toValue: 1.04}),
-      Animated.timing(bounceValues[index], {toValue: 1, duration: 120})
-    ]).start(() => this.props.navigation.navigate(
+  const goToDeckView = (key, index) => {
+    navigation.navigate(
       'DeckView', {'deckId': key}
-    ))
-  }
-
-  render() {
-    const {decks} = this.props
-    const {ready, bounceValues} = this.state
-    
-    if (ready === false) {
-      return <AppLoading/>
-    }
-
-    return (
-      <ScrollView style={styles.container}>
-        {decks.map((deck, index) => {
-          const key = deck.title
-          return (
-            <TouchableOpacity key={key} onPress={() => this.goToDeckView(key, index)}>
-              <View style={styles.deckInfo}>
-                  <Animated.Text style={[styles.deckTitle, {transform: [{scale: bounceValues[index]}]}]}>
-                    {deck.title}
-                  </Animated.Text>
-                  <Animated.Text style={[styles.cardsInfo, {transform: [{scale: bounceValues[index]}]}]}>
-                    {deck.questions.length} cards
-                  </Animated.Text>
-              </View>
-            </TouchableOpacity>
-          )
-        })}
-      </ScrollView>
     )
   }
+
+  return (
+    <ScrollView style={styles.container}>
+      {Object.keys(decks).map((id) => {
+        const deck = decks[id];
+        return (
+          <TouchableOpacity key={id} onPress={() => goToDeckView(id)}>
+            <View style={styles.deckInfo}>
+                <Text style={[deck.deckTitle]}>
+                  {deck.title}
+                </Text>
+                <Text style={[styles.cardsInfo]}>
+                  {deck.questions.length} cards
+                </Text>
+            </View>
+          </TouchableOpacity>
+        )
+      })}
+    </ScrollView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -90,10 +68,18 @@ const styles = StyleSheet.create({
 })
 
 
-function mapStateToProps(decks) {
+const mapStateToProps = (decks) => {
   return {
-    decks: Object.values(decks).sort((a, b) => a.title.localeCompare(b.title))
+    decks,
   }
 }
 
-export default connect(mapStateToProps)(DeckList)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    initializeData: () => {
+      dispatch(handleGetAllDecks());
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeckList)
